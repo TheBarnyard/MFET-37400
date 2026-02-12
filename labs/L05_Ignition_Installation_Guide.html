@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 05: Ignition Installation - MFET 37400</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #e0e0e0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(30, 30, 46, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h3 {
+            color: #8b9dff;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h4 {
+            color: #a8b5ff;
+            font-size: 1.2em;
+            margin: 20px 0 10px 0;
+        }
+
+        .overview {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-left: 4px solid #667eea;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .lab-structure {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .lab-card {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .lab-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            border-color: #8b9dff;
+        }
+
+        .lab-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .points {
+            color: #4ade80;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .code-block {
+            background: #1a1a2e;
+            border: 1px solid #667eea;
+            border-left: 4px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block code {
+            color: #4ade80;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .language-label {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: bold;
+        }
+
+        .step {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid #8b9dff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .warning {
+            background: rgba(251, 146, 60, 0.1);
+            border-left: 4px solid #fb923c;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .warning::before {
+            content: "⚠️ ";
+            font-size: 1.2em;
+        }
+
+        .info {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .info::before {
+            content: "ℹ️ ";
+            font-size: 1.2em;
+        }
+
+        .success {
+            background: rgba(74, 222, 128, 0.1);
+            border-left: 4px solid #4ade80;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .success::before {
+            content: "✅ ";
+            font-size: 1.2em;
+        }
+
+        .checklist {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+
+        .checklist-item input[type="checkbox"] {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+
+        a {
+            color: #8b9dff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #667eea;
+            text-decoration: underline;
+        }
+
+        .resources {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .resource-link {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid #667eea;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .resource-link:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateX(5px);
+        }
+
+        .icon {
+            font-size: 1.5em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        tr:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .architecture-diagram {
+            background: #1a1a2e;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .architecture-diagram pre {
+            color: #8b9dff;
+            font-size: 0.9em;
+            line-height: 1.8;
+            text-align: left;
+            display: inline-block;
+        }
+
+        .example-box {
+            background: rgba(118, 75, 162, 0.1);
+            border: 2px solid #764ba2;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .example-box h4 {
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+
+        .troubleshooting {
+            background: rgba(251, 146, 60, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .troubleshooting h4 {
+            color: #fb923c;
+        }
+
+        footer {
+            background: #1a1a2e;
+            color: #888;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin: 0 5px;
+        }
+
+        .badge-required {
+            background: #ef4444;
+            color: white;
+        }
+
+        .badge-optional {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .badge-points {
+            background: #4ade80;
+            color: #1a1a2e;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            gap: 15px;
+        }
+
+        .nav-button {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .command {
+            background: #1a1a2e;
+            color: #4ade80;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            .container {
+                box-shadow: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            .lab-structure {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔥 Lab 05: Ignition Automation Platform</h1>
+            <p class="subtitle">MFET 37400-002 | Spring 2026 | Manufacturing Integration</p>
+        </header>
+
+        <div class="content">
+            <!-- Overview Section -->
+            <section id="overview">
+                <h2>📋 Lab Overview</h2>
+                <div class="overview">
+                    <p>In this lab you will install the <strong>Ignition Automation platform</strong> to a Raspberry Pi. The Ignition platform is an example of a new form of Industrial Automation software which allows for the mixing of multiple OT (Operational Technology) and IT (Information Technology) technologies in a single development environment.</p>
+                    <p>With platforms such as Ignition, data ingestion, control, storage, and visualization can all be done within a standard computing device, reducing the traditional requirements for specific industrial devices for specific tasks.</p>
+                </div>
+
+                <h3>🎯 Lab Structure</h3>
+                <div class="lab-structure">
+                    <div class="lab-card">
+                        <h4>L05-1: Installing Ignition</h4>
+                        <p>Install Java runtime and Ignition Edge Gateway on Raspberry Pi</p>
+                        <p class="points">20 points</p>
+                    </div>
+                    <div class="lab-card">
+                        <h4>L05-2: Getting Started</h4>
+                        <p>Complete Ignition Basics course on Inductive University</p>
+                        <p class="points">30 points</p>
+                    </div>
+                    <div class="lab-card">
+                        <h4>L05-3: OPC UA & Devices</h4>
+                        <p>Learn OPC UA protocol and device connectivity</p>
+                        <p class="points">30 points</p>
+                    </div>
+                    <div class="lab-card">
+                        <h4>L05-4: Demo Navigation</h4>
+                        <p>Explore demos and design theoretical application</p>
+                        <p class="points">20 points</p>
+                    </div>
+                </div>
+
+                <div class="success">
+                    <strong>Total Lab Points: 100</strong>
+                </div>
+            </section>
+
+            <!-- Prerequisites -->
+            <section id="prerequisites">
+                <h2>🔧 Prerequisites</h2>
+
+                <h3>Required Equipment</h3>
+                <ul>
+                    <li>Raspberry Pi Model 4 (8 GB RAM recommended)</li>
+                    <li>MicroSD card with Raspberry Pi OS installed</li>
+                    <li>Internet connection (WiFi or Ethernet)</li>
+                    <li>Monitor, keyboard, and mouse (or SSH/VNC access)</li>
+                </ul>
+
+                <h3>Lab WiFi Credentials</h3>
+                <div class="info">
+                    <strong>SSID:</strong> <code class="command">soetmfg</code><br>
+                    <strong>Password:</strong> <code class="command">MFETis4Me</code>
+                </div>
+
+                <h3>📚 Resources</h3>
+                <div class="resources">
+                    <a href="https://inductiveautomation.com/ignition/" class="resource-link" target="_blank">
+                        <span class="icon">🔗</span>
+                        <span>Introduction to Ignition</span>
+                    </a>
+                    <a href="https://www.inductiveuniversity.com/" class="resource-link" target="_blank">
+                        <span class="icon">🎓</span>
+                        <span>Inductive University</span>
+                    </a>
+                    <a href="https://inductiveautomation.com/downloads/" class="resource-link" target="_blank">
+                        <span class="icon">⬇️</span>
+                        <span>Ignition Download Site</span>
+                    </a>
+                    <a href="https://cloud.inductiveautomation.com/demo" class="resource-link" target="_blank">
+                        <span class="icon">🎮</span>
+                        <span>Ignition Demo Site</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- L05-1 -->
+            <section id="l05-1">
+                <h2>🚀 L05-1: Installing Ignition <span class="badge badge-points">20 pts</span></h2>
+
+                <div class="step">
+                    <h3><span class="step-number">1</span>Install Java (OpenJDK)</h3>
+                    <p>Ignition requires Java to run. We'll install OpenJDK using the Debian package manager.</p>
+
+                    <h4>Open Terminal</h4>
+                    <ul>
+                        <li>Press <kbd>Ctrl + Alt + T</kbd> or click the terminal icon</li>
+                    </ul>
+
+                    <h4>Update Package Lists</h4>
+                    <div class="code-block">
+                        <span class="language-label">bash</span>
+                        <code>sudo apt update</code>
+                    </div>
+
+                    <h4>Install OpenJDK 17 (Recommended for Ignition 8.1+)</h4>
+                    <div class="code-block">
+                        <span class="language-label">bash</span>
+                        <code>sudo apt install openjdk-17-jdk -y</code>
+                    </div>
+
+                    <h4>Verify Java Installation</h4>
+                    <div class="code-block">
+                        <span class="language-label">bash</span>
+                        <code>java -version</code>
+                    </div>
+
+                    <div class="success">
+                        Expected output:<br>
+                        <code>openjdk version "17.x.x"</code>
+                    </div>
+
+                    <div class="warning">
+                        <strong>Note:</strong> The Debian pull instruction set appears to work for most students. If you encounter issues, try OpenJDK 11 instead:
+                        <div class="code-block">
+                            <code>sudo apt install openjdk-11-jdk -y</code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">2</span>Download Ignition Edge</h3>
+
+                    <h4>Navigate to Downloads Directory</h4>
+                    <div class="code-block">
+                        <span class="language-label">bash</span>
+                        <code>cd ~/Downloads</code>
+                    </div>
+
+                    <h4>Download Ignition Edge for Linux ARM</h4>
+                    <p>Visit the <a href="https://inductiveautomation.com/downloads/" target="_blank">Ignition Download Site</a> and download:</p>
+                    <ul>
+                        <li><strong>Ignition - Linux AARCH64.zip</strong> (for Raspberry Pi ARM architecture)</li>
+                    </ul>
+
+                    <p>Alternatively, use wget if you have the direct link:</p>
+                    <div class="code-block">
+                        <span class="language-label">bash</span>
+                        <code>wget https://files.inductiveautomation.com/release/ia/8.1.45/Ignition-linux-aarch-64-8.1.45.zip</code>
+                    </div>
+
+                    <div class="info">
+                        <strong>Note:</strong> Version number may vary. Use the latest stable release from the download site.
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">3</span>Extract and Install Ignition</h3>
+
+                    <h4>Extract the Archive</h4>
+                    <div class="code-block">
+                        <span class="language-label">bash</span>
+                        <code>unzip Ignition-linux-aarch-64-8.1.45.zip</code>
+                    </div>
+
+                    <p>This creates a directory with installation files.</p>
+
+                    <h4>Navigate to the Extracted Directory</h4>
+                    <div class="code-block">
+                        <span class="language-label">bash</span>
+                        <code>cd Ignition-linux-aarch-64-8.1.45</code>
+                    </div>
+
+                    <h4>Make Installation Script Executable</h4>
+                    <div class="code-block">
+                        <span class="language-label">bash</span>
+                        <code>sudo chmod +x *.sh</code>
+                    </div>
+
+                    <h4>Install and Start Ignition Gateway</h4>
+                    <div class="code-block">
+                        <span class="language-label">bash</span>
+                        <code>sudo ./ignition.sh installstart</code>
+                    </div>
+
+                    <div class="info">
+                        This command will:
+                        <ul>
+                            <li>Install Ignition as a service</li>
+                            <li>Start the Ignition Gateway automatically</li>
+                            <li>Configure it to start on boot</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">4</span>Access the Ignition Gateway</h3>
+
+                    <h4>Open Web Browser</h4>
+                    <p>Open a web browser on the Raspberry Pi (Chromium recommended)</p>
+
+                    <h4>Navigate to Gateway URL</h4>
+                    <div class="code-block">
+                        <code>http://localhost:8088/web/home</code>
+                    </div>
+
+                    <h4>Complete Initial Setup</h4>
+                    <ul>
+                        <li>Follow the on-screen instructions</li>
+                        <li>Choose gateway configuration options</li>
+                        <li>Set up authentication</li>
+                    </ul>
+
+                    <h4>Login to Gateway</h4>
+                    <div class="info">
+                        <strong>Default Credentials:</strong><br>
+                        Username: <code class="command">admin</code><br>
+                        Password: <code class="command">password</code>
+                    </div>
+
+                    <div class="warning">
+                        <strong>Important:</strong> Change the default password after first login for security!
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">5</span>Verify Installation</h3>
+                    <div class="checklist">
+                        <h4>Checkoff Requirements:</h4>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check1-1">
+                            <label for="check1-1">Java is installed and version displayed</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check1-2">
+                            <label for="check1-2">Ignition Gateway is running</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check1-3">
+                            <label for="check1-3">Web interface accessible at http://localhost:8088</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check1-4">
+                            <label for="check1-4">Successfully logged into Gateway homepage</label>
+                        </div>
+                    </div>
+
+                    <div class="success">
+                        <strong>✋ Raise your hand to demonstrate your progress to the lab instructor.</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- L05-2 -->
+            <section id="l05-2">
+                <h2>📚 L05-2: Getting Started with Ignition <span class="badge badge-points">30 pts</span></h2>
+
+                <div class="overview">
+                    <p><strong>Objective:</strong> Learn the fundamentals of Ignition platform through Inductive University training modules.</p>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">1</span>Create Inductive University Account</h3>
+
+                    <ul>
+                        <li>Navigate to <a href="https://www.inductiveuniversity.com/" target="_blank">Inductive University</a></li>
+                        <li>Click "Sign Up"</li>
+                        <li>Enter your information (use Purdue email recommended)</li>
+                        <li>Activate your account via email</li>
+                        <li>Login to your account</li>
+                    </ul>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">2</span>Complete Ignition Basics Course</h3>
+
+                    <h4>Navigate to Course Catalog</h4>
+                    <p>Select <strong>"Ignition Basics"</strong> from the course catalog</p>
+
+                    <h4>Course Topics Include:</h4>
+                    <ul>
+                        <li>Ignition Platform Overview</li>
+                        <li>Gateway architecture and configuration</li>
+                        <li>Designer workspace navigation</li>
+                        <li>Tag system fundamentals</li>
+                        <li>Basic project creation and management</li>
+                    </ul>
+
+                    <h4>Complete ALL Course Elements</h4>
+                    <ul>
+                        <li>Watch all video modules</li>
+                        <li>Review all documentation sections</li>
+                        <li>Complete hands-on exercises</li>
+                        <li>Take all Topic Challenges</li>
+                    </ul>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">3</span>Topic Challenges <span class="badge badge-required">REQUIRED</span></h3>
+
+                    <div class="warning">
+                        <strong>Important Requirements:</strong>
+                        <ul>
+                            <li>Take <strong>ALL Topic Challenges</strong> in the Ignition Basics course</li>
+                            <li><strong>100% score required</strong> to proceed</li>
+                            <li>Retake challenges until you achieve mastery</li>
+                            <li>Each challenge must show 100% before moving to next topic</li>
+                        </ul>
+                    </div>
+
+                    <h4>Learning Strategy:</h4>
+                    <ul>
+                        <li>📝 Take notes during videos</li>
+                        <li>📖 Review documentation before challenges</li>
+                        <li>🎮 Use the Ignition Designer to practice concepts</li>
+                        <li>⏰ Don't rush - understanding is more important than speed</li>
+                    </ul>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">4</span>Optional Certification <span class="badge badge-optional">OPTIONAL</span></h3>
+
+                    <div class="info">
+                        <strong>Ignition Core Certification</strong>
+                        <ul>
+                            <li>Available upon course completion</li>
+                            <li><strong>Highly recommended</strong> for your resume</li>
+                            <li>Demonstrates proficiency with Ignition platform</li>
+                            <li>Free through Inductive University</li>
+                            <li>Complete on your own time for professional development</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">5</span>Demonstrate Completion</h3>
+                    <div class="checklist">
+                        <h4>Checkoff Requirements:</h4>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check2-1">
+                            <label for="check2-1">Inductive University account created</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check2-2">
+                            <label for="check2-2">All Ignition Basics modules completed</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check2-3">
+                            <label for="check2-3">All Topic Challenges passed with 100%</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check2-4">
+                            <label for="check2-4">Course progress visible on dashboard</label>
+                        </div>
+                    </div>
+
+                    <div class="success">
+                        <strong>✋ Show your completion status to the lab instructor to receive credit.</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- L05-3 -->
+            <section id="l05-3">
+                <h2>🔌 L05-3: OPC UA and Devices <span class="badge badge-points">30 pts</span></h2>
+
+                <div class="overview">
+                    <p><strong>Objective:</strong> Learn about OPC UA protocol and device connectivity in Ignition through structured training.</p>
+                </div>
+
+                <div class="info">
+                    <h4>What is OPC UA?</h4>
+                    <p><strong>OPC Unified Architecture (OPC UA)</strong> is an industrial communication protocol that:</p>
+                    <ul>
+                        <li>✅ Provides secure, reliable data exchange</li>
+                        <li>✅ Enables cross-platform communication</li>
+                        <li>✅ Supports complex data structures</li>
+                        <li>✅ Is vendor-independent and standardized</li>
+                        <li>✅ Used extensively in IIoT (Industrial Internet of Things)</li>
+                    </ul>
+                    <p>Ignition uses OPC UA as its primary protocol for device connectivity.</p>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">1</span>Access Ignition Gateway Setup Course</h3>
+
+                    <ol>
+                        <li>Navigate to <strong>Course Catalog</strong> in Inductive University</li>
+                        <li>Select <strong>"Ignition Gateway Setup"</strong></li>
+                        <li>Find <strong>"OPC-UA and Devices in Ignition"</strong> sub-section</li>
+                    </ol>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">2</span>Complete First Two Elements</h3>
+
+                    <h4>Module 1: OPC UA Overview</h4>
+                    <ul>
+                        <li>OPC UA fundamentals and architecture</li>
+                        <li>Client-server communication model</li>
+                        <li>Security concepts and implementation</li>
+                        <li>Data modeling and information models</li>
+                    </ul>
+
+                    <h4>Module 2: Device Connections in Ignition</h4>
+                    <ul>
+                        <li>Adding OPC UA devices to Ignition</li>
+                        <li>Driver configuration and settings</li>
+                        <li>Tag browsing and discovery</li>
+                        <li>Connection diagnostics and troubleshooting</li>
+                    </ul>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">3</span>Topic Challenges <span class="badge badge-required">REQUIRED</span></h3>
+
+                    <div class="warning">
+                        <strong>Requirements:</strong>
+                        <ul>
+                            <li>Take <strong>ALL Topic Challenges</strong> for the first two elements</li>
+                            <li><strong>100% score required</strong> for each challenge</li>
+                            <li>Do not proceed until mastery achieved</li>
+                            <li>Review material as needed</li>
+                        </ul>
+                    </div>
+
+                    <h4>Topics Covered:</h4>
+                    <table>
+                        <tr>
+                            <th>Topic</th>
+                            <th>Key Concepts</th>
+                        </tr>
+                        <tr>
+                            <td>OPC UA Addressing</td>
+                            <td>NodeIDs, namespaces, addressing schemes</td>
+                        </tr>
+                        <tr>
+                            <td>Device Connections</td>
+                            <td>Connection parameters, endpoints, security modes</td>
+                        </tr>
+                        <tr>
+                            <td>Tag Structure</td>
+                            <td>Tag naming, organization, data types</td>
+                        </tr>
+                        <tr>
+                            <td>Troubleshooting</td>
+                            <td>Connectivity issues, diagnostic tools, logs</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">4</span>Practical Understanding</h3>
+
+                    <h4>Key Concepts to Master:</h4>
+                    <ul>
+                        <li>🔍 How Ignition discovers OPC UA devices</li>
+                        <li>⚙️ Configuring device connections</li>
+                        <li>📊 Browsing and importing tags</li>
+                        <li>🔗 Testing device connectivity</li>
+                        <li>📈 Understanding connection status indicators</li>
+                    </ul>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">5</span>Demonstrate Completion</h3>
+                    <div class="checklist">
+                        <h4>Checkoff Requirements:</h4>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check3-1">
+                            <label for="check3-1">First two OPC UA modules completed</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check3-2">
+                            <label for="check3-2">All Topic Challenges passed with 100%</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check3-3">
+                            <label for="check3-3">Can explain OPC UA role in Ignition</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check3-4">
+                            <label for="check3-4">Progress visible in course dashboard</label>
+                        </div>
+                    </div>
+
+                    <div class="success">
+                        <strong>✋ Show completion to the lab instructor to receive credit.</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- L05-4 -->
+            <section id="l05-4">
+                <h2>🎮 L05-4: Navigating Ignition Demos <span class="badge badge-points">20 pts</span></h2>
+
+                <div class="overview">
+                    <p><strong>Objective:</strong> Explore real-world Ignition applications and design a theoretical application based on your experiences.</p>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">1</span>Access Ignition Demo Site</h3>
+
+                    <h4>Navigate to Demo Site</h4>
+                    <div class="code-block">
+                        <code>https://cloud.inductiveautomation.com/demo</code>
+                    </div>
+
+                    <h4>Login as Operator</h4>
+                    <div class="info">
+                        Username: <code class="command">operator</code><br>
+                        Password: <code class="command">password</code>
+                    </div>
+
+                    <h4>Explore the Interface</h4>
+                    <ul>
+                        <li>Note the navigation structure</li>
+                        <li>Observe the different application types</li>
+                        <li>Understand the layout and design patterns</li>
+                    </ul>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">2</span>Explore One Feature</h3>
+
+                    <h4>Choose ONE feature to explore in depth:</h4>
+                    <ul>
+                        <li><strong>Tag History:</strong> Historical data logging and trending</li>
+                        <li><strong>Alarming:</strong> Alarm management and notification</li>
+                        <li><strong>Reporting:</strong> Automated report generation</li>
+                        <li><strong>Scheduling:</strong> Production scheduling tools</li>
+                        <li><strong>Mobile:</strong> Mobile-responsive interfaces</li>
+                        <li><strong>Security:</strong> User management and permissions</li>
+                    </ul>
+
+                    <h4>Exploration Tasks:</h4>
+                    <div class="checklist">
+                        <div class="checklist-item">
+                            <input type="checkbox" id="feat-1">
+                            <label for="feat-1">Navigate to the feature</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="feat-2">
+                            <label for="feat-2">Interact with all available controls</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="feat-3">
+                            <label for="feat-3">Understand the data flow</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="feat-4">
+                            <label for="feat-4">Note the UI/UX design patterns</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="feat-5">
+                            <label for="feat-5">Consider real-world applications</label>
+                        </div>
+                    </div>
+
+                    <h4>Document the Following:</h4>
+                    <ul>
+                        <li>Feature name</li>
+                        <li>Primary purpose</li>
+                        <li>Key capabilities</li>
+                        <li>User interaction methods</li>
+                        <li>Data visualization techniques</li>
+                    </ul>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">3</span>Explore One Demo App</h3>
+
+                    <h4>Choose ONE demo application:</h4>
+                    <ul>
+                        <li><strong>Manufacturing Execution System (MES)</strong></li>
+                        <li><strong>Process Control Dashboard</strong></li>
+                        <li><strong>Warehouse Management</strong></li>
+                        <li><strong>Energy Monitoring</strong></li>
+                        <li><strong>Quality Assurance Tracking</strong></li>
+                        <li><strong>Asset Management</strong></li>
+                    </ul>
+
+                    <h4>Exploration Tasks:</h4>
+                    <div class="checklist">
+                        <div class="checklist-item">
+                            <input type="checkbox" id="app-1">
+                            <label for="app-1">Understand the application's purpose</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="app-2">
+                            <label for="app-2">Navigate through all screens</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="app-3">
+                            <label for="app-3">Identify data sources and I/O</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="app-4">
+                            <label for="app-4">Note the workflow structure</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="app-5">
+                            <label for="app-5">Observe integration points</label>
+                        </div>
+                    </div>
+
+                    <h4>Document the Following:</h4>
+                    <ul>
+                        <li>App name and purpose</li>
+                        <li>Industry/sector application</li>
+                        <li>Key screens and their functions</li>
+                        <li>Data inputs and outputs</li>
+                        <li>Automation logic observed</li>
+                    </ul>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">4</span>Design Your Theoretical Application</h3>
+
+                    <p>Create a theoretical Ignition application based on your own experiences and interests.</p>
+
+                    <h4>1️⃣ Application Concept</h4>
+                    <ul>
+                        <li><strong>Name:</strong> Give your application a descriptive name</li>
+                        <li><strong>Purpose:</strong> What problem does it solve?</li>
+                        <li><strong>Industry:</strong> What sector is it for?</li>
+                        <li><strong>Users:</strong> Who will use it and how?</li>
+                    </ul>
+
+                    <h4>2️⃣ Dashboard Design</h4>
+                    <p>Create sketches/drawings of your dashboards:</p>
+                    <ul>
+                        <li><strong>Main Dashboard:</strong> Overview screen layout</li>
+                        <li><strong>Detail Screens:</strong> Specific monitoring/control views</li>
+                        <li><strong>Navigation:</strong> How users move between screens</li>
+                        <li><strong>Widgets:</strong> Charts, gauges, indicators, buttons</li>
+                        <li><strong>Color Scheme:</strong> Status indicators and branding</li>
+                    </ul>
+
+                    <div class="info">
+                        <strong>Drawing Tools:</strong>
+                        <ul>
+                            <li>Paper and pencil (photograph or scan)</li>
+                            <li>Digital drawing (tablet, whiteboard app)</li>
+                            <li>Mockup software (Figma, draw.io, PowerPoint)</li>
+                        </ul>
+                    </div>
+
+                    <h4>3️⃣ I/O Specification</h4>
+
+                    <h5>Inputs (from devices/sensors):</h5>
+                    <ul>
+                        <li>List all data inputs needed</li>
+                        <li>Specify data types (analog, digital, string)</li>
+                        <li>Identify update rates</li>
+                    </ul>
+
+                    <div class="example-box">
+                        <h4>Example Inputs:</h4>
+                        <ul>
+                            <li>Temperature sensors (analog, 0-100°C, 1 Hz)</li>
+                            <li>Conveyor status (digital, ON/OFF, on change)</li>
+                            <li>Barcode scanner (string, product ID, event-driven)</li>
+                        </ul>
+                    </div>
+
+                    <h5>Outputs (to devices/actuators):</h5>
+                    <ul>
+                        <li>List all control outputs</li>
+                        <li>Specify command types</li>
+                        <li>Identify control methods</li>
+                    </ul>
+
+                    <div class="example-box">
+                        <h4>Example Outputs:</h4>
+                        <ul>
+                            <li>Motor start/stop (digital, momentary)</li>
+                            <li>Valve position (analog, 0-100%, continuous)</li>
+                            <li>Status lights (digital, ON/OFF, persistent)</li>
+                        </ul>
+                    </div>
+
+                    <h4>4️⃣ Protocols and Communication</h4>
+                    <p>Specify protocols for each device category:</p>
+                    <ul>
+                        <li><strong>OPC UA:</strong> Industrial devices with native OPC support</li>
+                        <li><strong>Modbus TCP/RTU:</strong> PLCs and legacy equipment</li>
+                        <li><strong>MQTT:</strong> IoT sensors and cloud integration</li>
+                        <li><strong>Database:</strong> SQL for data storage and retrieval</li>
+                        <li><strong>REST API:</strong> External system integration</li>
+                    </ul>
+
+                    <div class="example-box">
+                        <h4>Example Protocol Assignment:</h4>
+                        <ul>
+                            <li>PLC (Allen-Bradley): OPC UA over Ethernet</li>
+                            <li>Temperature sensors: Modbus TCP, IP: 192.168.1.50</li>
+                            <li>Cloud analytics: MQTT broker at cloud.example.com</li>
+                            <li>Historical database: PostgreSQL on local server</li>
+                        </ul>
+                    </div>
+
+                    <h4>5️⃣ System Architecture Diagram</h4>
+                    <p>Include a simple architecture drawing showing:</p>
+                    <ul>
+                        <li>Devices/sensors (lowest level)</li>
+                        <li>Communication protocols</li>
+                        <li>Ignition Gateway (middle)</li>
+                        <li>Clients/displays (top level)</li>
+                        <li>External systems (databases, cloud, ERP)</li>
+                    </ul>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">5</span>Prepare Your Presentation</h3>
+
+                    <h4>Be ready to explain:</h4>
+
+                    <table>
+                        <tr>
+                            <th>Section</th>
+                            <th>Duration</th>
+                            <th>Content</th>
+                        </tr>
+                        <tr>
+                            <td>Application Overview</td>
+                            <td>1-2 min</td>
+                            <td>What it does, who uses it, why it's valuable</td>
+                        </tr>
+                        <tr>
+                            <td>Dashboard Walkthrough</td>
+                            <td>2-3 min</td>
+                            <td>Show drawings, explain screens, describe interactions</td>
+                        </tr>
+                        <tr>
+                            <td>Technical Architecture</td>
+                            <td>2-3 min</td>
+                            <td>I/O points, protocols, integration points</td>
+                        </tr>
+                        <tr>
+                            <td>Real-World Relevance</td>
+                            <td>1 min</td>
+                            <td>Experience basis, improvements, challenges</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="step">
+                    <h3><span class="step-number">6</span>Demonstrate to TA</h3>
+                    <div class="checklist">
+                        <h4>Checkoff Requirements:</h4>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check4-1">
+                            <label for="check4-1">Explored one feature in demo site</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check4-2">
+                            <label for="check4-2">Explored one demo app thoroughly</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check4-3">
+                            <label for="check4-3">Created application concept document</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check4-4">
+                            <label for="check4-4">Drew dashboard mockups (at least 2 screens)</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check4-5">
+                            <label for="check4-5">Specified I/O requirements</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check4-6">
+                            <label for="check4-6">Identified protocols for communication</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check4-7">
+                            <label for="check4-7">Prepared architecture diagram</label>
+                        </div>
+                        <div class="checklist-item">
+                            <input type="checkbox" id="check4-8">
+                            <label for="check4-8">Can clearly explain application to TA</label>
+                        </div>
+                    </div>
+
+                    <div class="success">
+                        <strong>✋ Summon your TA and present your theoretical application to receive a checkoff.</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Application Examples -->
+            <section id="examples">
+                <h2>💡 Application Design Examples</h2>
+
+                <div class="example-box">
+                    <h4>Example 1: Home Brewing Automation</h4>
+                    <p><strong>Concept:</strong> Automate temperature control and monitoring for home brewing operations.</p>
+
+                    <h5>Dashboards:</h5>
+                    <ul>
+                        <li><strong>Main:</strong> Current batch overview, temperature trends, timer</li>
+                        <li><strong>Detail:</strong> Recipe manager, historical batch comparison</li>
+                        <li><strong>Control:</strong> Manual overrides, setpoint adjustments</li>
+                    </ul>
+
+                    <h5>I/O:</h5>
+                    <ul>
+                        <li><strong>Inputs:</strong> Temperature sensors (4x, analog), flow meters (2x, pulse), level switches (3x, digital)</li>
+                        <li><strong>Outputs:</strong> Heating element control (PWM), pump control (2x, ON/OFF), solenoid valves (3x, ON/OFF)</li>
+                    </ul>
+
+                    <h5>Protocols:</h5>
+                    <ul>
+                        <li>Arduino with Modbus RTU for sensors/actuators</li>
+                        <li>Local SQLite database for recipes and history</li>
+                        <li>Mobile app connection via Ignition Perspective</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 2: Greenhouse Environmental Control</h4>
+                    <p><strong>Concept:</strong> Monitor and control greenhouse climate for optimal plant growth.</p>
+
+                    <h5>Dashboards:</h5>
+                    <ul>
+                        <li><strong>Main:</strong> Environmental overview (temp, humidity, CO2, light)</li>
+                        <li><strong>Zones:</strong> Individual zone control (8 greenhouse zones)</li>
+                        <li><strong>Analytics:</strong> Growth trends, energy usage, harvest predictions</li>
+                    </ul>
+
+                    <h5>I/O:</h5>
+                    <ul>
+                        <li><strong>Inputs:</strong> Temp/humidity sensors (8x, I2C), CO2 sensors (2x, analog), light sensors (8x, analog), soil moisture (16x, analog)</li>
+                        <li><strong>Outputs:</strong> HVAC controls (analog dampers, fan VFDs), irrigation valves (16x, digital), shade curtains (8x, analog position), supplemental lighting (8x, dimming)</li>
+                    </ul>
+
+                    <h5>Protocols:</h5>
+                    <ul>
+                        <li>Raspberry Pi I2C for local sensors</li>
+                        <li>Modbus TCP for HVAC controllers</li>
+                        <li>OPC UA for irrigation PLC</li>
+                        <li>Weather API (REST) for forecast data</li>
+                        <li>Cloud database (MQTT) for analytics</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example 3: 3D Printer Farm Management</h4>
+                    <p><strong>Concept:</strong> Monitor and manage multiple 3D printers for production efficiency.</p>
+
+                    <h5>Dashboards:</h5>
+                    <ul>
+                        <li><strong>Farm Overview:</strong> Status of all printers, queue management</li>
+                        <li><strong>Printer Detail:</strong> Individual printer metrics, camera feed</li>
+                        <li><strong>Production:</strong> Job scheduling, material tracking, quality logs</li>
+                    </ul>
+
+                    <h5>I/O:</h5>
+                    <ul>
+                        <li><strong>Inputs:</strong> Printer status (OctoPrint API), filament sensors, temperature sensors, print completion signals</li>
+                        <li><strong>Outputs:</strong> Print job dispatch, emergency stop, enclosure heaters</li>
+                    </ul>
+
+                    <h5>Protocols:</h5>
+                    <ul>
+                        <li>REST API to OctoPrint instances</li>
+                        <li>MQTT for printer telemetry</li>
+                        <li>USB cameras for monitoring</li>
+                        <li>MySQL database for job history</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Architecture Diagram -->
+            <section id="architecture">
+                <h2>🏗️ Ignition System Architecture</h2>
+
+                <div class="architecture-diagram">
+                    <pre>
+┌─────────────────────────────────────────────────────────┐
+│         <strong>Clients (Vision/Perspective)</strong>                │
+│         User Interfaces & Displays                      │
+└────────────────┬────────────────────────────────────────┘
+                 │ HTTP/WebSocket
+┌────────────────▼────────────────────────────────────────┐
+│              <strong>Ignition Gateway</strong>                       │
+│  • Tag Engine    • Scripting      • Projects           │
+│  • Alarming      • Reporting      • Security            │
+└────────┬───────────────────┬──────────────────────────┘
+         │ OPC UA            │ SQL/JDBC
+┌────────▼─────────┐   ┌─────▼──────────────────────────┐
+│   <strong>Devices</strong>      │   │   <strong>Databases</strong>                  │
+│   PLCs           │   │   Historians                   │
+│   Sensors        │   │   ERP Systems                  │
+└──────────────────┘   └────────────────────────────────┘
+                    </pre>
+                </div>
+
+                <h3>Key Components:</h3>
+                <table>
+                    <tr>
+                        <th>Component</th>
+                        <th>Description</th>
+                        <th>Function</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Gateway</strong></td>
+                        <td>Central server component</td>
+                        <td>Manages connections, tags, projects; web-based configuration</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Designer</strong></td>
+                        <td>Development environment</td>
+                        <td>WYSIWYG interface builder, scripting editor, launches from Gateway</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vision Client</strong></td>
+                        <td>Desktop HMI client</td>
+                        <td>Full-featured desktop application for operators</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Perspective</strong></td>
+                        <td>Web/mobile client</td>
+                        <td>Browser-based responsive interface for any device</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- Troubleshooting -->
+            <section id="troubleshooting">
+                <h2>🔧 Troubleshooting</h2>
+
+                <div class="troubleshooting">
+                    <h4>Issue: Ignition Won't Start</h4>
+                    <p><strong>Symptoms:</strong> Gateway service fails to start</p>
+
+                    <h5>Solutions:</h5>
+                    <ol>
+                        <li>Check Java installation:
+                            <div class="code-block"><code>java -version</code></div>
+                        </li>
+                        <li>Verify service status:
+                            <div class="code-block"><code>sudo systemctl status ignition</code></div>
+                        </li>
+                        <li>Check logs:
+                            <div class="code-block"><code>tail -f /var/log/ignition/wrapper.log</code></div>
+                        </li>
+                        <li>Restart service:
+                            <div class="code-block"><code>sudo systemctl restart ignition</code></div>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>Issue: Cannot Access Gateway Web Interface</h4>
+                    <p><strong>Symptoms:</strong> Browser cannot connect to localhost:8088</p>
+
+                    <h5>Solutions:</h5>
+                    <ol>
+                        <li>Verify Ignition is running:
+                            <div class="code-block"><code>sudo systemctl status ignition</code></div>
+                        </li>
+                        <li>Check port 8088 is listening:
+                            <div class="code-block"><code>sudo netstat -tlnp | grep 8088</code></div>
+                        </li>
+                        <li>Try IP address instead:
+                            <div class="code-block"><code>hostname -I</code></div>
+                            Then navigate to <code>http://&lt;IP_ADDRESS&gt;:8088</code>
+                        </li>
+                        <li>Check firewall:
+                            <div class="code-block"><code>sudo ufw status</code></div>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>Issue: Inductive University Videos Not Playing</h4>
+
+                    <h5>Solutions:</h5>
+                    <ul>
+                        <li>Update browser to latest version</li>
+                        <li>Enable JavaScript in browser settings</li>
+                        <li>Disable browser extensions (especially ad blockers)</li>
+                        <li>Try different browser (Chromium, Firefox)</li>
+                        <li>Check internet connectivity and bandwidth</li>
+                    </ul>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>Issue: Gateway Performance Issues</h4>
+                    <p><strong>Symptoms:</strong> Slow response, high CPU/memory usage</p>
+
+                    <h5>Solutions:</h5>
+                    <ol>
+                        <li>Check Raspberry Pi memory usage:
+                            <div class="code-block"><code>free -h</code></div>
+                        </li>
+                        <li>Monitor CPU temperature:
+                            <div class="code-block"><code>vcgencmd measure_temp</code></div>
+                        </li>
+                        <li>Ensure adequate cooling (add heatsinks/fan)</li>
+                        <li>Close unnecessary applications</li>
+                        <li>Consider upgrading to 8GB RAM model if using 4GB</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Resources -->
+            <section id="resources">
+                <h2>📚 Additional Resources</h2>
+
+                <h3>Documentation</h3>
+                <div class="resources">
+                    <a href="https://docs.inductiveautomation.com/" class="resource-link" target="_blank">
+                        <span class="icon">📖</span>
+                        <span>Ignition User Manual</span>
+                    </a>
+                    <a href="https://docs.inductiveautomation.com/display/DOC81/Scripting+Functions" class="resource-link" target="_blank">
+                        <span class="icon">💻</span>
+                        <span>Scripting Functions Reference</span>
+                    </a>
+                    <a href="https://opcfoundation.org/developer-tools/specifications-unified-architecture" class="resource-link" target="_blank">
+                        <span class="icon">🔌</span>
+                        <span>OPC UA Specification</span>
+                    </a>
+                </div>
+
+                <h3>Community & Training</h3>
+                <div class="resources">
+                    <a href="https://forum.inductiveautomation.com/" class="resource-link" target="_blank">
+                        <span class="icon">💬</span>
+                        <span>Ignition Forum</span>
+                    </a>
+                    <a href="https://www.youtube.com/user/InductiveAutomation" class="resource-link" target="_blank">
+                        <span class="icon">📺</span>
+                        <span>Inductive Automation YouTube</span>
+                    </a>
+                    <a href="https://www.inductiveuniversity.com/" class="resource-link" target="_blank">
+                        <span class="icon">🎓</span>
+                        <span>Inductive University</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Final Checklist -->
+            <section id="final-checklist">
+                <h2>✅ Lab Completion Checklist</h2>
+
+                <div class="lab-structure">
+                    <div class="lab-card">
+                        <h4>L05-1: Installing Ignition</h4>
+                        <div class="checklist">
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final1-1">
+                                <label for="final1-1">Java installed</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final1-2">
+                                <label for="final1-2">Ignition downloaded</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final1-3">
+                                <label for="final1-3">Service running</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final1-4">
+                                <label for="final1-4">Gateway accessible</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final1-5">
+                                <label for="final1-5">Instructor checkoff ✓</label>
+                            </div>
+                        </div>
+                        <p class="points">20 pts</p>
+                    </div>
+
+                    <div class="lab-card">
+                        <h4>L05-2: Getting Started</h4>
+                        <div class="checklist">
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final2-1">
+                                <label for="final2-1">Account created</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final2-2">
+                                <label for="final2-2">Course completed</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final2-3">
+                                <label for="final2-3">Challenges 100%</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final2-4">
+                                <label for="final2-4">Progress verified</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final2-5">
+                                <label for="final2-5">Instructor checkoff ✓</label>
+                            </div>
+                        </div>
+                        <p class="points">30 pts</p>
+                    </div>
+
+                    <div class="lab-card">
+                        <h4>L05-3: OPC UA</h4>
+                        <div class="checklist">
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final3-1">
+                                <label for="final3-1">Module 1 done</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final3-2">
+                                <label for="final3-2">Module 2 done</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final3-3">
+                                <label for="final3-3">Challenges 100%</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final3-4">
+                                <label for="final3-4">Can explain OPC UA</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final3-5">
+                                <label for="final3-5">Instructor checkoff ✓</label>
+                            </div>
+                        </div>
+                        <p class="points">30 pts</p>
+                    </div>
+
+                    <div class="lab-card">
+                        <h4>L05-4: Demos</h4>
+                        <div class="checklist">
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final4-1">
+                                <label for="final4-1">Feature explored</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final4-2">
+                                <label for="final4-2">App explored</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final4-3">
+                                <label for="final4-3">Concept designed</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final4-4">
+                                <label for="final4-4">Diagrams complete</label>
+                            </div>
+                            <div class="checklist-item">
+                                <input type="checkbox" id="final4-5">
+                                <label for="final4-5">TA checkoff ✓</label>
+                            </div>
+                        </div>
+                        <p class="points">20 pts</p>
+                    </div>
+                </div>
+
+                <div class="success">
+                    <h3 style="text-align: center; margin-top: 30px;">🎉 Lab Complete: 100 Points Total</h3>
+                    <p style="text-align: center;">No formal submission required - all credit awarded upon checkoffs</p>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p><strong>Lab Guide Created:</strong> February 2026</p>
+            <p><strong>Course:</strong> MFET 37400-002 - Manufacturing Integration</p>
+            <p><strong>Institution:</strong> Purdue University</p>
+            <p style="margin-top: 15px; color: #667eea;">Generated with Claude Code</p>
+        </footer>
+    </div>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Save checkbox states to localStorage
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            // Load saved state
+            const savedState = localStorage.getItem(checkbox.id);
+            if (savedState === 'true') {
+                checkbox.checked = true;
+            }
+
+            // Save state on change
+            checkbox.addEventListener('change', function() {
+                localStorage.setItem(this.id, this.checked);
+            });
+        });
+
+        // Print button functionality
+        function printLab() {
+            window.print();
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+P for print
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                printLab();
+            }
+        });
+
+        // Progress tracker
+        function updateProgress() {
+            const allCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+            const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            const progress = Math.round((checkedBoxes.length / allCheckboxes.length) * 100);
+            console.log(`Lab Progress: ${progress}%`);
+        }
+
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', updateProgress);
+        });
+    </script>
+</body>
+</html>
